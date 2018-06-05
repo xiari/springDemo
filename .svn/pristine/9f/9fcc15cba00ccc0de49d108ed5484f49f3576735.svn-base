@@ -1,0 +1,32 @@
+# var
+logpath=/opt/logs/tomcat/springDemo/
+layout = org.apache.log4j.PatternLayout
+##%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c.%M(%L)): - %m%n
+layout_pattern = %d{HH:mm:ss} [%t] %-5p %c.%M(%L)): - %m%n
+
+frameWork.logLevel = DEBUG
+default.logLevel = DEBUG
+# root logger ,alertLog
+log4j.rootLogger = DEBUG,stdout
+
+#appender
+#stdout
+log4j.appender.stdout =  org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout = ${layout}
+log4j.appender.stdout.layout.ConversionPattern = ${layout_pattern}
+
+#ibatis
+log4j.logger.com.ibatis = DEBUG
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource = DEBUG
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner = DEBUG
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate = DEBUG
+log4j.logger.java.sql.Connection = DEBUG
+log4j.logger.java.sql.Statement = DEBUG
+log4j.logger.java.sql.PreparedStatement = DEBUG
+log4j.logger.java.sql.ResultSet = DEBUG
+
+#dubbo
+log4j.logger.com.alibaba.dubbo = DEBUG
+
+#spring
+log4j.logger.org.springframework.web = DEBUG

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.mvc.MapperInterface.PermissionMapper">
+
+   <select id="getPermissionInfo" parameterType="java.lang.Long" resultType="com.demo.mvc.model.Permission">
+       SELECT r.menu_id as id, r.menu_name as permission  FROM student_manager.menu r
+       WHERE menu_id = #{permissionId}
+   </select>
+</mapper>

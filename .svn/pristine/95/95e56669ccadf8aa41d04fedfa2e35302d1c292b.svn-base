@@ -1,0 +1,117 @@
+package com.demo.mvc;
+
+import com.demo.mvc.model.StudentEntity;
+import com.demo.mvc.service.StudentManageService;
+import com.demo.utils.JsonUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.*;
+
+
+/**
+ * Created by XYY78 on 2016/10/27.
+ */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath*:spring/applicationContext.xml")
+public class BaseJunitTestCaseTest  {
+
+    @Autowired
+    private StudentManageService studentManageService;
+
+    @Autowired // 事务管理器
+    private DataSourceTransactionManager dataSourceTransactionManager;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
+
+    @Test
+    public void getStudentsTest(){
+
+        TransactionTemplate transactionTemplate = new TransactionTemplate();
+        transactionTemplate.setTransactionManager(dataSourceTransactionManager);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+
+            }
+        });
+        List<Long> idList = Arrays.asList(1L, 2l, 3l);
+       System.out.println( JsonUtil.toJsonString(studentManageService.queryStudentList(idList)));
+    }
+    @Test
+    public void addStudentEntityListTest() throws Throwable {
+        List<StudentEntity> list = getStudentEntities();
+
+        System.out.print("resultNum ==============before==================="+System.currentTimeMillis() +"\r\n" );
+        int resultNum = studentManageService.addStudentEntityList(list);
+        System.out.print("resultNum:\t" +resultNum +"===========after=============" + System.currentTimeMillis() +"\r\n");
+        System.out.println(resultNum);
+    }
+
+
+    @Test
+    public void testDeclareTx (){ // 编程式事务 方式一： 采用platformTransactionManager实现类
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("tx_01");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = dataSourceTransactionManager.getTransaction(def);
+        try{
+            List<StudentEntity> list = getStudentEntities();
+            studentManageService.addStudentEntityList(list);
+        } catch (Exception ex){
+            dataSourceTransactionManager.rollback(status);
+            ex.printStackTrace();
+        }
+        dataSourceTransactionManager.commit(status);
+    }
+
+    @Test
+    public void testDeclareTx02 (){ // 编程式事务 方式二： 采用transactionTemplate实现
+        transactionTemplate.execute(new TransactionCallback() {
+          public Object doInTransaction(TransactionStatus status){
+              int result =0 ;
+              try{
+                  List<StudentEntity> list = getStudentEntities();
+                  result = studentManageService.addStudentEntityList(list);
+              }catch (Exception e){
+                  status.setRollbackOnly();
+              }
+              return result;
+           }
+        });
+    }
+
+    private List<StudentEntity> getStudentEntities() {
+        List<StudentEntity> list = new ArrayList<StudentEntity>();
+        StudentEntity entity = new StudentEntity();
+        entity.setStudentName("zhanggang1");
+        entity.setSeqNo("126");
+        entity.setBirthday(new Date());
+        list.add(entity);
+
+        StudentEntity entity1 = new StudentEntity();
+        entity1.setStudentName("zhanggang2");
+        entity1.setSeqNo("125");
+        entity1.setBirthday(new Date());
+        entity.setTimeOfEnrollment(new Date());
+        entity.setDateOFGraduation(new Date());
+        entity1.setTimeOfEnrollment(new Date());
+        entity1.setDateOFGraduation(new Date());
+        list.add(entity1);
+        return list;
+    }
+}

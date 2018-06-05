@@ -1,0 +1,108 @@
+home :
+	http://localhost:8080/, 返回默认页面，页面包含头部，底部，工具栏
+
+	点击工具栏find，展示搜索页面：页面包含搜索框及添加对象按钮
+		点击addOwner，进入添加页面init页面，一般采用get方法
+			添加数据后提交成功后重定向到 xxx页面。
+		点击搜索，默认返回所有数据
+		基本信息性别采用下拉框形式
+
+
+迭代1：(本周末）
+完成一个对象页面的增删改查功能，采用 springMVC + JSP + mybatis + mysql + bootStrap
+    - jsp 与 spring 标签
+        - 基本html标签
+            - 表单
+                - 定义
+                    - 有几种方式, 如采用jsp tag , spring tag。
+                    Jsp方式为<form id="x" name="y" action=".htm" enctype="application/*"> --1:表单定义
+                                <input id="" name="" type="text" />   --2：文本框定义
+                                <input id="button" name="" onclick="clickMe"/> --3:表单提交
+                            </form>
+            - 文本框
+                - 定义 ：见2：文本框定义
+            - 按钮
+                - 定义
+                    - 有四种方式，
+                        1 <input type="button"/> 这就是一个按钮。如果你不写javascript 的话，按下去什么也不会发生。
+                        2 <input type="submit"/> 这样的按钮用户点击之后会自动提交 form，除非你写了javascript 阻止它。
+                        3 <button /> 这个按钮放在 form 中也会点击自动提交，比前两个的优点是按钮的内容不光可以有文字，还可以有图片等多媒体内容。
+                            （当然，前两个用图片背景也可以做到）。它的缺点是不同的浏览器得到的 value 值不同；可能还有其他的浏览器兼容问题
+                        4 <a> <img> <div> <span>等伪装为一个按钮
+               - 样式
+
+
+
+            - 输入框
+                - 定义： 类文本框定义
+            - 下拉框
+
+            - 复选框
+            - 单选框
+            - 滚动条
+            - 弹框
+        - 重定向功能
+        - 转发
+    - spring对象绑定与数据校验
+    - spring视图解析
+
+迭代2：
+采用ajax方式完成异步数据请求
+    - 完成列表异步加载
+    - 完成数据删除
+    - 完成数据更新
+
+
+迭代3：完善页面登陆 ，采用shiro+cas完成
+    - 登陆验证 - done
+        - 用户注册页面，注册成功后，进入到注册成功页面 - done
+        - 普通登录页面，用户登录成功后，进入到登录成功页面 -done
+        - 用户购物等页面，验证用户需要登录，登录成功后重定向到原有页面 -undone
+            -是否可以通过refer获取上一次访问页面进行重定向
+
+    - 单点登录  -done
+    登陆验证需要自定义用户密码加密、userRealm获取验证信息，配置过滤器
+
+
+迭代4: 完成简易商品购买
+    - 商品展示
+    - 商品购买
+
+迭代5：商品搜索, 拟采用es
+
+
+迭代6：优化， 采用数据redis/memcache缓存
+    - redis集成done
+
+迭代7：采用服务化拆分
+
+
+===============
+js 中读取JSON的方法探讨
+
+js读取JSON的方法我接触到的有两种：
+方法一：函数构造定义法返回
+var strJSON = "{name:'json name'}";//得到的JSON
+var obj = new Function("return" + strJSON)();//转换后的JSON对象
+alert(obj.name);//json name
+
+方法二：js中著名的eval函数
+var strJSON = "{name:'json name'}";//得到的JSON
+var obj = eval( "(" + strJSON + ")" );//转换后的JSON对象
+alert(obj.name);//json name
+
+第二种方法需要注意的是，对象表达式{'name':'json name'}必须用“（）”扩住，否则
+var strJSON = "{name:'json name'}";
+var obj = eval(strJSON);
+alert(obj.constructor);//String 构造函数
+alert(obj.name);//undefine
+必须把对象表达式扩起来eval执行才能生成一个匿名对象!
+
+
+20180319
+验证 dbcp c3p0 druid3个数据库连接池性能
+
+
+
+
+

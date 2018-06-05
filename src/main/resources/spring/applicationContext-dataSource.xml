@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:rdb="http://www.dangdang.com/schema/ddframe/rdb"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                http://www.springframework.org/schema/tx
+                http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+                http://www.springframework.org/schema/aop
+                http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+                http://www.dangdang.com/schema/ddframe/rdb
+                http://www.dangdang.com/schema/ddframe/rdb/rdb.xsd
+                ">
+    <!-- 数据源配置 -->
+    <bean id="mysqlDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+<!--    <bean id="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>-->
+
+    <!--<bean id="mysqlDataSource" class="com.alibaba.druid.pool.DruidDataSource"  destroy-method="close" init-method="init" lazy-init="true">-->
+        <!--<property name="url" value="${jdbc.url}"/>-->
+        <!--<property name="username" value="${jdbc.username}"/>-->
+        <!--<property name="password" value="${jdbc.password}"/>-->
+        <!--<property name="maxActive" value="${jdbc.maxActive}"/>-->
+        <!--<property name="driverClassName" value="${jdbc.driver}" />-->
+    <!--</bean>-->
+
+    <!-- SqlSessionFactory配置，同时指定数据源-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="mysqlDataSource"/>
+        <property name="mapperLocations" value="classpath*:sqlMapper/*.xml"/>
+    </bean>
+
+    <!-- 该bean可以直接将接口转化为spring Bean-->
+    <bean id="mapperScannerConfigurerMySql" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.demo.mvc.MapperInterface"/>
+    </bean>
+
+    <!-- 事务管理器基于dataSource -->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="mysqlDataSource" />
+    </bean>
+
+    <!--  事务切面 -->
+    <tx:advice id="txManager" transaction-manager="dataSourceTransactionManager">
+        <!-- 传播属性 -->
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Throwable"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Throwable"/>
+            <tx:method name="del*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <!--切点-->
+        <aop:pointcut expression="execution(* com.demo.mvc.service.StudentManageService.*(..))" id="studentAop"/>
+        <!--切面事务增强-->
+        <aop:advisor advice-ref="txManager" pointcut-ref="studentAop"/>
+    </aop:config>
+
+
+    <!-- 采用TransactionTemplate实现编程式事务 -->
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="dataSourceTransactionManager"/>
+    </bean>
+
+    <!-- oracle数据源配置 -->
+    <!--
+    <bean id="oracleDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${oracle.jdbc.driverClassName}"/>
+        <property name="url" value="${oracle.jdbc.url}"/>
+        <property name="username" value="${oracle.jdbc.username}"/>
+        <property name="password" value="${oracle.jdbc.password}"/>
+    </bean>
+
+    &lt;!&ndash; SqlSessionFactory配置，同时指定数据源&ndash;&gt;
+    <bean id="sqlSessionFactoryOracle" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="oracleDataSource"/>
+        <property name="mapperLocations" value="classpath:sqlMapper/erpMessageMapper.xml"/>
+    </bean>
+
+    &lt;!&ndash; 该bean可以直接将接口转化为spring Bean&ndash;&gt;
+    <bean id="oracleMapper" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryOracle"/>
+        <property name="basePackage" value="com.demo.mvc.modelMapper.oracleMapper"/>
+    </bean>-->
+</beans>

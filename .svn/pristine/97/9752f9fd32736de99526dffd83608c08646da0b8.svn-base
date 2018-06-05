@@ -1,0 +1,20 @@
+package com.dubbo;
+
+import com.dubbo.service.CustomerService;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.IOException;
+
+public class Consumer {
+
+    public static void main(String[] args) throws IOException {
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext(new String[]{"spring/dubbo/applicationConsumer.xml"});
+        context.start();
+
+        CustomerService demoService = (CustomerService) context.getBean("demoService"); // get remote service proxy
+        System.out.println(demoService.sayHello("zhanggang "));
+        // press any key to exit
+        System.in.read();
+    }
+}

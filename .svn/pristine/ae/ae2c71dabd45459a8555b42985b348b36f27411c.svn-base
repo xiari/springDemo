@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!-- enable auto detection -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com.demo.mvc" />
+
+    <bean id="configPlaceHolder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+        <property name="locations">
+            <list>
+                <value>classpath:conf/*.properties</value>
+                <value>classpath:log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+    <import resource="applicationContext-dataSource.xml"/>
+    <import resource="applicationContext-Cache.xml"/>
+    <import resource="applicationContext-shiro.xml"/>
+    <import resource="applicationContext-aop.xml"/>
+    <!--<import resource="applicationContext-batch.xml"/>-->
+    <!--<import resource="applicationConsumer.xml"/>-->
+</beans>

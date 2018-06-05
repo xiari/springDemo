@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.dangdang.com/schema/ddframe/rdb"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                http://www.springframework.org/schema/mvc
+                http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.dangdang.com/schema/ddframe/rdb http://www.dangdang.com/schema/ddframe/rdb/rdb.xsd">
+
+<bean id="helloAspect" class="com.demo.utils.LogAspect"/>
+
+    <!-- To enable @AspectJ support with XML based configuration use the aop:aspectj-autoproxy element: -->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <!--declare an aspect-->
+    <!-- proxy-target-class="true" ：force to use cglib-->
+    <aop:config proxy-target-class="true" >
+
+        <!-- expression规则为标识返回类型为所有，类StudentManageService中所有方法，方法参数不限制 -->
+        <aop:pointcut id="facadePointCut" expression="execution(* com.demo.mvc.service.StudentManageService.*(..))"/>
+        <aop:aspect id="aspectLog" ref="helloAspect">
+            <aop:around method="monitor" pointcut-ref="facadePointCut"/>
+            <aop:before method="before" pointcut-ref="facadePointCut"/>
+            <aop:after method="after" pointcut-ref="facadePointCut"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

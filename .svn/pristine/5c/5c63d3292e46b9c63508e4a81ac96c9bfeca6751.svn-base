@@ -1,0 +1,32 @@
+package com.demo.mvc.redis;
+
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Created by XYY78 on 2017/7/6.
+ */
+public class RedisTest {
+
+    public static void main(String[] args){
+        Set<HostAndPort> hostAndPortSet = new HashSet<HostAndPort>();
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7000));
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7001));
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7002));
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7003));
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7004));
+        hostAndPortSet.add(new HostAndPort("192.168.119.133", 7005));
+        JedisCluster jedisCluster = new JedisCluster(hostAndPortSet);
+        jedisCluster.set("1" ,"raining bow ...");
+        System.out.print(jedisCluster.get("1"));
+        try {
+            jedisCluster.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

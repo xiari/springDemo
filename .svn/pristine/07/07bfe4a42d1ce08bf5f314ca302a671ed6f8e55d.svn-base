@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.mvc.MapperInterface.UserMapper">
+
+
+    <insert id="createEndUser" parameterType="com.demo.mvc.model.User" useGeneratedKeys="true"  keyProperty="id">
+        INSERT INTO end_user (
+              end_user_name,
+              end_user_password,
+              salt,
+              create_time,
+              is_deleted)
+        VALUES (#{username},#{password},#{salt},now(),0)
+    </insert>
+
+    <select id="getUserInfo" resultType="com.demo.mvc.model.User">
+        SELECT eu.end_user_name AS username,eu.end_user_id AS id, eu.end_user_password AS password, eu.salt AS salt
+        FROM student_manager.end_user eu
+        WHERE eu.end_user_name = #{userName} AND eu.end_user_password = #{passWord}
+    </select>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultType="com.demo.mvc.model.User">
+        SELECT eu.end_user_name AS username,eu.end_user_id AS id, eu.end_user_password AS password, eu.salt AS salt
+        FROM student_manager.end_user eu
+        WHERE eu.end_user_name = #{userName}
+    </select>
+    <select id="findUserRoleByName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT endUserRole.role_name
+          FROM end_user eu
+        LEFT JOIN (SELECT eur.end_user_id, r.role_id, r.role_name
+             FROM end_user_role eur, role r
+            WHERE r.role_id = eur.role_id) endUserRole
+              ON eu.end_user_id = endUserRole.end_user_id
+        WHERE eu.end_user_name = #{userName};
+    </select>
+
+    <select id="findUserPermissionByName" parameterType="java.lang.String"
+            resultType="java.lang.String">
+        SELECT permission.menu_name
+          FROM end_user eu
+        LEFT JOIN end_user_role useRole ON eu.end_user_id = useRole.end_user_id
+        LEFT JOIN (SELECT m.menu_id, m.menu_name, rm.role_id
+        FROM menu m, role_menu rm
+        WHERE m.menu_id = rm.menu_id) permission
+        ON permission.role_id = useRole.role_id
+        WHERE eu.end_user_name = #{userName};
+    </select>
+</mapper>

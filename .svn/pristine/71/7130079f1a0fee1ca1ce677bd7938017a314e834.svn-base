@@ -1,0 +1,21 @@
+package com.demo.mvc.basicJava.proxy;
+
+
+import com.dubbo.service.CustomerService;
+import com.dubbo.service.CustomerServiceImpl;
+
+/**java设计模式中三种使用方式
+ */
+public class ProxyTest {
+
+    public static void main(String argv[]) throws InterruptedException {
+        ProxyFactory proxyFactory = new ProxyFactory(new CustomerServiceImpl());
+        CustomerService customerService = (CustomerService)proxyFactory.getNewInstance();
+        System.out.println(customerService.sayHello("zhangGang"));
+
+
+        CglibProxyFactory cglibProxyFactory = new CglibProxyFactory(new CustomerServiceImpl());
+        CustomerService service = (CustomerService)cglibProxyFactory.getProxyInstance();
+        System.out.println(service.sayHello("xiaoming"));
+    }
+}

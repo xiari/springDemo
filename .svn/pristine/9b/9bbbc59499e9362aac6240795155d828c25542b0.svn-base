@@ -1,0 +1,111 @@
+package com.demo.mvc.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * Created by XYY78 on 2016/9/1.
+ */
+public class StudentEntity implements Serializable, Cloneable {
+
+    private static final long serialVersionUID = 831601661352410720L;
+
+    private Long id;            // 主键（自增）
+    private String studentName; // 姓名
+    private String sex;        // 性别 0:女 1：男
+    private String seqNo;       // 学号
+    private String address;     // 家庭住址
+    private Date   birthday;    // 生日
+    private Date   timeOfEnrollment ; // 入学时间
+    private Date   dateOFGraduation;  // 毕业时间
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getSeqNo() {
+        return seqNo;
+    }
+
+    public void setSeqNo(String seqNo) {
+        this.seqNo = seqNo;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public Date getTimeOfEnrollment() {
+        return timeOfEnrollment;
+    }
+
+    public void setTimeOfEnrollment(Date timeOfEnrollment) {
+        this.timeOfEnrollment = timeOfEnrollment;
+    }
+
+    public Date getDateOFGraduation() {
+        return dateOFGraduation;
+    }
+
+    public void setDateOFGraduation(Date dateOFGraduation) {
+        this.dateOFGraduation = dateOFGraduation;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentEntity{" +
+                "id='" + id + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", sex='" + sex + '\'' +
+                ", seqNo='" + seqNo + '\'' +
+                ", address='" + address + '\'' +
+                ", timeOfEnrollment=" + timeOfEnrollment +
+                ", dateOFGraduation=" + dateOFGraduation +
+                '}';
+    }
+
+    @Override
+    public Object clone(){
+
+        Object object = null;
+        try{
+            object = super.clone();
+            // if there are some complex object , you need new an object and re-assign it.
+        }catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return object;
+    }
+}

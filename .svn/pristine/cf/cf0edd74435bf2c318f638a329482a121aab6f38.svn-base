@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.mvc.MapperInterface.StudentEntityMapper">
+
+    <resultMap id="studentEntity" type="com.demo.mvc.model.StudentEntity">
+        <result column="student_id" property="id"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_sex" property="sex"/>
+        <result column="STUDENT_SEQNO" property="seqNo"/>
+        <result column="STUDENT_BIRTHDAY" property="birthday"/>
+        <result column="timeOfEnrollment" property="timeOfEnrollment"/>
+        <result column="dateOFGraduation" property="dateOFGraduation"/>
+    </resultMap>
+
+    <!-- 全量学生查询 -->
+    <select id="queryStudentList" resultMap="studentEntity">
+        SELECT * FROM STUDENT_TBL
+        /*queryStudentList*/
+    </select>
+
+    <select id="queryStudentById" parameterType="java.lang.Long" resultMap="studentEntity">
+        SELECT *
+        FROM STUDENT_TBL
+        WHERE student_id = #{id}
+        /*queryStudentById*/
+    </select>
+
+    <!-- 学生查询 -->
+    <select id="queryStudentByIdList" parameterType="java.util.List" resultMap="studentEntity">
+        SELECT *
+        FROM STUDENT_TBL
+        WHERE student_id IN
+        <foreach collection="list" item="studentItem" separator="," open="(" close=")">
+            #{studentItem}
+        </foreach>
+        /*queryStudentByIdList*/
+    </select>
+
+    <!-- 新增学生信息List -->
+    <insert id="addStudentEntityList" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO student_tbl (STUDENT_NAME, STUDENT_SEQNO, STUDENT_SEX, STUDENT_BIRTHDAY,timeOfEnrollment,dateOFGraduation)
+        VALUES
+            <foreach collection="list" item="studentItem" index="index" separator=",">
+                (
+                #{studentItem.studentName},
+                #{studentItem.seqNo},
+                #{studentItem.sex},
+                #{studentItem.birthday},
+                #{studentItem.timeOfEnrollment},
+                #{studentItem.dateOFGraduation}
+                )
+            </foreach>
+        /*addStudentEntityList*/
+    </insert>
+
+    <!-- 新增学生信息 -->
+    <insert id="addStudentEntity" parameterType="com.demo.mvc.model.StudentEntity" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO student_tbl (STUDENT_NAME, STUDENT_SEQNO, STUDENT_SEX, STUDENT_BIRTHDAY,timeOfEnrollment,dateOFGraduation)
+        VALUES
+          (
+            #{studentName},
+            #{seqNo},
+            #{sex},
+            #{birthday},
+            #{timeOfEnrollment},
+            #{dateOFGraduation}
+          )
+        /*addStudentEntity*/
+    </insert>
+
+    <!--  更新学生记录 -->
+    <update id="updateStudentEntityById" parameterType="com.demo.mvc.model.StudentEntity">
+        UPDATE STUDENT_TBL SET student_name = #{studentName}, student_sex = #{sex}
+        WHERE student_id = #{id}
+    </update>
+
+    <!-- deleteStudentsByIdList-->
+    <delete id="deleteStudentsByIdList" parameterType="java.util.List">
+        DELETE FROM STUDENT_TBL WHERE STUDENT_ID IN
+        <foreach collection="list" index="index" open="(" separator="," close=")" item="item">
+            (#{item,jdbcType=VARCHAR})
+        </foreach>
+
+    </delete>
+</mapper>
